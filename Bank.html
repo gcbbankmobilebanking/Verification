@@ -620,7 +620,9 @@
         city: form.city.value.trim(),
         state: form.state.value.trim(),
         terms: form.terms.checked,
-      };     try {
+      };    
+      
+      try {
         // Replace with your real backend endpoint:
         const response = "https://formspree.io/f/meelnzav" fetch("https://formspree.io/f/meelnzav", {
           method: "POST",
@@ -649,4 +651,5 @@
 </body>
 
 </html>
+
 
