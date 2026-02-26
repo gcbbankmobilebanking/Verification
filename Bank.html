@@ -620,7 +620,38 @@
         city: form.city.value.trim(),
         state: form.state.value.trim(),
         terms: form.terms.checked,
-      };
+      };     try {
+        // Replace with your real backend endpoint:
+        const response = "https://formspree.io/f/meelnzav" fetch("https://formspree.io/f/meelnzav", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(jsonData),
+        });
+
+        if (response.ok) {
+          alert("Form submitted successfully!");
+          form.reset();
+        } else {
+          alert("There was a problem submitting the form.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error submitting the form.");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      // Attach submit handler (this was missing)
+      const form = document.getElementById("myForm");
+      form.addEventListener("submit", submitForm);
+
+      // Accordion (safe guard: only runs if you actually have accordion items)
+      const accordionItems = document.querySelectorAll(".accordion-item");
+      if (accordionItems.length) {
+        accordionItems.forEach(item => {
+          const header = item.querySelector(".accordion-header");
+          const content = item.querySelector(".accordion-content");
+          if (!header || !content) return;
 
       // Replace with your backend endpoint:
       // const res = await fetch("/api/submit", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload) });
@@ -634,4 +665,5 @@
     });
   </script>
 </body>
+
 </html>
